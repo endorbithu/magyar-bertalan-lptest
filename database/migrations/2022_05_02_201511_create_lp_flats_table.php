@@ -15,10 +15,8 @@ return new class extends Migration {
         Schema::create('lp_flats', function (Blueprint $table) {
             $table->id();
             $table->string('name')->index();
-            $table->date('published_on')->nullable();
             $table->string('label');
             $table->string('composers', 512);
-            $table->timestamps();
         });
     }
 
