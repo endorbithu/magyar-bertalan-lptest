@@ -1,4 +1,4 @@
-# Magyar Bertalan LP tesztfeladat
+# Magyar Bertalan LP teszt feladat
 
 ## Áttekintés
 
