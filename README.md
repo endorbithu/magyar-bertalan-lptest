@@ -39,7 +39,7 @@ Egy-oldalas alkalmazás, amellyel LP-ket lehet listázni és rögzíteni,
     - `name (idx) | created_at | updated_at`
 - lp_flats (flat tábla lp-hez, nagy )
     - `name (idx) | published_on | label | composers | created_at | updated_at`
-    - Mivel a rendszernek tudnia kell nagy mennyiségű adatot listáznia, ezért egy flat táblába vannak "cache"-elve az
+    - Mivel a rendszernek tudnia kell nagy mennyiségű adatot listáznia, ezért egy flat táblában is le vannak tárolva az
       LP-k
       a hatékonyabb listázás érdekében. Ezt százezres-milliós nagyságrendtől
       lehet Elasticsearch stb. jól skálázható, gyorsabb, index alapú motorokkal szinkroznizálni, és ezt a motort
