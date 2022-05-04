@@ -30,7 +30,7 @@
         }
 
         .select2-container {
-            width: 300px !important;
+            width: 285px !important;
         }
 
         .add-composer-btn {
@@ -197,7 +197,7 @@
         });
 
         $('#add-composer-btn').on('click', function () {
-            $('.composer-container').append('<input type="text" class="form-control" name="add_composer[]" placeholder="Composer name">');
+            $('.composer-container').append('<input type="text" class="form-control" name="add_composer[]" style="margin-bottom: 5px" placeholder="Composer name">');
         });
     });
 </script>
