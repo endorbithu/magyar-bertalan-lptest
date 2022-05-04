@@ -9,6 +9,7 @@ Egy-oldalas alkalmazás, amellyel LP-ket lehet listázni és rögzíteni,
 
 - Linux (ubuntu)
 - Apache 2.4
+- Composer 2
 - PHP 8
 - MySql 8
 
@@ -16,6 +17,7 @@ Egy-oldalas alkalmazás, amellyel LP-ket lehet listázni és rögzíteni,
 
 - `.env` létrehozása `.env.example` alapján
 - `composer install`
+- `php artisan key:generate`
 - `php artisan migrate`
 
 ## Backend
@@ -40,7 +42,7 @@ Egy-oldalas alkalmazás, amellyel LP-ket lehet listázni és rögzíteni,
     - Mivel a rendszernek tudnia kell nagy mennyiségű adatot listáznia, ezért egy flat táblába vannak "cache"-elve az
       LP-k
       a hatékonyabb listázás érdekében. Ezt százezres-milliós nagyságrendtől
-      lehet Elasticsearch stb. jól skálázható gyorsabb, index alapú motorokkal szinkroznizálni, és ezt a motort
+      lehet Elasticsearch stb. jól skálázható, gyorsabb, index alapú motorokkal szinkroznizálni, és ezt a motort
       használni keresés/listázás célra.
     - Az `lp_flats` tábla realtime szinkronban van a `lps` táblával Eloquent entity observer segítségével,
       ebből is következik, hogy a `lps` CRUD műveleteknek az Eloquent ORM-en belül kell maradniuk.
@@ -74,7 +76,8 @@ kapcsolva.
 Az implementációs függés csökkentése érdekében nem példányosítunk közvetlenül Service osztályt, hanem a Contracts-ban
 határozzuk meg
 mit várunk az egyes Service-ktől, és ezeket a Interface-eket az `AppServiceProvider`-ben kapcsoljuk össze a konkrét
-service osztályokkal,és a laravel DI container `app(Contracts\AnInterface::class)` keresztül példányosítjuk a meghatározott
+service osztályokkal,és a laravel DI container `app(Contracts\AnInterface::class)` keresztül példányosítjuk a
+meghatározott
 service-t. így a konkrét service osztályoktól nem fogunk függeni.
 
 - `LpSaveInstantInterface`
