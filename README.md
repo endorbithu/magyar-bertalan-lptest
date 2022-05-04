@@ -1,64 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Magyar Bertalan LP tesztfeladat
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Áttekintés
 
-## About Laravel
+Ez egy egy-oldalas alkalmazás, amellyel LP-ket lehet listázni és rögzíteni,
+és egy időben Szerzőt és Kiadót hozzákapcsolni/hozzáadni a feltöltendő LP-hez.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Környezet
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Linux (ubuntu)
+- Apache 2.4
+- PHP 8
+- MySql 8
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Keretrendszerek/library-k
 
-## Learning Laravel
+- Laravel 9
+- Eloquent ORM
+- Bootstrap JS
+- Select2.js
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- `.env` elkészítése `.env.example` alapján
+    - DB_... adatok
+    - APP_URL=
+- `composer install`
+- `php artisan migrate`
 
-## Laravel Sponsors
+## Db struktúra
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- lps
+    - `name | label_id (FK) | published_on | created_at | updated_at`
+- composers
+    - `name (idx) | created_at | updated_at`
+- composer_lp (kapcsolótábla)
+    - `composer_id (FK) | lp_id (FK)`
+- labels
+    - `name (idx) | created_at | updated_at`
+- lp_flats (flat tábla lp-hez, nagy )
+    - `name (idx) | published_on | label | composers | created_at | updated_at`
+    - Mivel a rendszernek tudnia kell nagy mennyiségű adatot listáznia, ezért egy flat táblába vannak "cache"-elve az
+      LP-k
+      a hatékonyabb listázás érdekében. Ezt százezres-milliós nagyságrendtől 
+ érdemes  Elasticsearch stb jól skálázható gyorsabb, index alapú motorokkal szinkroznizálni, és ezt a motort használni keresés/listázás célra.
+    - Az `lp_flats` tábla realtime szinkronban van a `lps` táblával  Eloquent entity observer segítségével,
+      ebből is következik, hogy a `lps` CRUD műveleteknek az Eloquent ORM-en belül kell maradniuk.
 
-### Premium Partners
+### Indexek
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- labels.name
+    - select2.js-nél a névre keresünk rá.
+- composer.name
+    - select2.js-nél a névre keresünk rá.
+- lp_flats.name
+    - `name` szerinti rendezés merült fel, ehhez lett beállítva index
 
-## Contributing
+## Kód struktúra
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Controller, végpontok
 
-## Code of Conduct
+A gyökér route-ban van minden látható logika, amely végpont az `LpController::lps()`-re mutat, tehát nincsenek aloldalak. 
+Új LP hozzáadásánál a form action is a gyökér route-ra mutat, csak POST HTTP method-dal, 
+így annak külön action-je van a controllerben, de feldolgozás után visszanavigál a GET '/' route-ra.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### API végpontok
 
-## Security Vulnerabilities
+- /api/label
+- /api/composer
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Ezek a select2.js container-eket szolgálják ki AJAX hívás segítségével. 
+Név alapján tudunk keresni ezekre az entitásokra, és mivel az ID-t is lekérjük, hozzá tudjuk adni a formhoz az LP-hez kapcsolva.
 
-## License
+### Contracts, Services
+Az implementációs függés redukálása érdekében nem példányosítunk közvetlenül Service osztályt, hanem a Contracts-ban határozzuk meg
+mit várunk az egyes Service-ktől, és ezeket a Interface-eket az `AppServiceProvider`-ben kapcsoljuk össze a konkrét service 
+osztályokkal,és a laravel DI container `app(Contracts\AnInterface::class)` keresztül példányosítjuk a meghatározott service-t.
+így a konkrét service osztályoktól nem fogunk függeni.
+- `LpSaveInstantInterface`
+  -  LP rögzítése és a hozzátartozó composer(ek) + label létrehozása és/vagy hozzákapcsolása.
+- `Select2ServiceInterface`
+  - A `select2.js` containert kiszolgáló service, melynek a `getResultsForApi()` metódusa keresőszó inputra => `ID, name` találatokat
+a megadott Eloquent Model segítségével, és formázza a select.js számára.
+  
+### Hibakezelés 
+A Laravel built-in hibakezelési mechanizmusokon túl, egy új `Exception` lett bevezetve: `StatusBarExcetion`, ha ezt dobjuk fel, annál az esetnél  a Laravel Handler.php ban beállított
+módon visszairányít az előző oldalra, és a blade fájlokban globálisan elérhető `$errors` változóba be lesz állítva ennek az exceptionnek a  
+`$exception->getMessage()` -je.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
