@@ -88,8 +88,8 @@ service-t. így a konkrét service osztályoktól nem fogunk függeni.
 
 ### Observerek
 
-`LpObserver` observer van hozzákapcsolva az `Lp` eloquent model CRUD eseményeire. Ez felelős azért, hogy szinkronban
-tartsa az `lp_flats` táblával.
+`LpObserver` observer van hozzákapcsolva az `Lp` eloquent model CRUD eseményeire az `EventServiceProvider`-ben.
+Ez felelős azért, hogy szinkronban tartsa az `lp_flats` táblával.
 
 ### Hibakezelés
 
