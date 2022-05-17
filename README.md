@@ -1,5 +1,18 @@
 # Magyar Bertalan LP tesztfeladat
 
+## Feladat:
+Katalógus Projekt.
+
+Mit kell tudnia a rendszernek?  
+- A rendszer képes legyen LP (bakelit) lemezek adatait tárolni. Egy LP lemeznek van címe, szerzője, kiadója és kiadási dátuma. Egy lemeznek lehet egy vagy több szerzője, és egy kiadója, illetve ugyan az a művész lehet több LP lemez szerzője, mint ahogy ugyanaz a kiadó is lehet több különböző lemez kiadója. A rendszernek tudnia kell lemezeket rögzíteni, és listázni. A lista képernyőn elegendő a lemez címét, szerzőjét/szerzőit illetve a kiadó nevét felsorolni. A lista legyen lemez címe alapján abc sorrendben rendezve. A rendszernek tudnia kell nagy mennyiségű adatot listázni, ezért célszerű az adattáblákat (relációs adatbázis esetén) ennek megfelelően elkészíteni.
+
+Mit nem kell tudnia?
+- Nincs szükség felhasználó kezelésre.
+- Nincs szükség a felhasználótól érkező adatok ellenőrzésére.
+- Nincs szükség a lista lapozására.
+
+A rendszert PHP nyelven kell megírni. Bármely PHP keretrendszer használható (Symfony vagy Laravel preferált). Bármely ORM használható (Doctrine2 preferált). Az adatbázis lehet relációs vagy bármely nosql megoldás. A felhasználói felülethez bármely javascript és html/css keretrendszer használható.
+
 ## Áttekintés
 
 Egy-oldalas alkalmazás, amellyel LP-ket lehet listázni és rögzíteni,
