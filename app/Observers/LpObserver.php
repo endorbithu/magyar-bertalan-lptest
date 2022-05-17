@@ -16,9 +16,11 @@ class LpObserver
     public function saved(Lp $lp)
     {
         $lpFlat = LpFlat::find($lp->id) ?? (new LpFlat());
+        $lpFlat->id = $lp->id;
         $lpFlat->name = $lp->name;
         $lpFlat->label = $lp->label()->first()->name;
         $lpFlat->composers = $lp->composers()->get()->pluck('name')->implode(', ');
+
         $lpFlat->save();
     }
 
